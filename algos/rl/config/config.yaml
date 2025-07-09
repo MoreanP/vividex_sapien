@@ -12,18 +12,18 @@ hydra:
 exp_name: ${agent.name}-${env.name}
 id: ${hydra.job.id}
 resume_model: null
-total_timesteps: 60000000
+total_timesteps: 10000000
 n_envs: 32
 n_eval_envs: 5
-eval_freq: 1000000
+eval_freq: 500000
 vid_freq: null
-save_freq: 10000000
-restore_checkpoint_freq: 500000
+save_freq: 1000000
+restore_checkpoint_freq: 100000
 seed: 0
 rot_aug: True
 
 checkpoints:
-  save_freq: 4000000
+  save_freq: 500000
   save_path: ${hydra.sweep.dir}/models
   name_prefix: 'rl_model'
 
