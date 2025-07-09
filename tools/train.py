@@ -24,18 +24,19 @@ from hand_imitation.env.create_env import create_env
 from hand_imitation.env.gym_wrapper import GymWrapper
 from hand_imitation.utils.util import make_env, make_policy_kwargs, InfoCallback, FallbackCheckpoint
 from hand_imitation.utils.eval import make_eval_env, EvalCallback
+import pdb
 
 
-def create_wandb_run(output_dir, wandb_cfg, job_config, run_id=None):
-    try:
-        job_id = HydraConfig().get().job.num
-        override_dirname = HydraConfig().get().job.override_dirname
-        name = f'{wandb_cfg.sweep_name_prefix}-{job_id}'
-        notes = f'{override_dirname}'
-    except:
-        name, notes = None, None
+# def create_wandb_run(output_dir, wandb_cfg, job_config, run_id=None):
+#     try:
+#         job_id = HydraConfig().get().job.num
+#         override_dirname = HydraConfig().get().job.override_dirname
+#         name = f'{wandb_cfg.sweep_name_prefix}-{job_id}'
+#         notes = f'{override_dirname}'
+#     except:
+#         name, notes = None, None
 
-    return wandb.init(project=wandb_cfg.project, dir=output_dir, config=job_config, group=wandb_cfg.group, sync_tensorboard=True, monitor_gym=True, save_code=True, name=name, notes=notes, id=run_id, resume=run_id is not None)
+#     return wandb.init(project=wandb_cfg.project, dir=output_dir, config=job_config, group=wandb_cfg.group, sync_tensorboard=True, monitor_gym=True, save_code=True, name=name, notes=notes, id=run_id, resume=run_id is not None)
 
 
 cfg_path = os.path.dirname(__file__)
@@ -49,7 +50,7 @@ def train(cfg: DictConfig, resume_model=None):
     if os.path.exists(os.path.join(output_dir, 'exp_config.yaml')):
         old_config = yaml.load(open(os.path.join(output_dir, 'exp_config.yaml'), 'r'))
         params, wandb_id = old_config['params'], old_config['wandb_id']
-        run = create_wandb_run(output_dir, cfg.wandb, params, wandb_id)
+        # run = create_wandb_run(output_dir, cfg.wandb, params, wandb_id)
         resume_model = 'restore_checkpoint.zip'
         assert os.path.exists(os.path.join(output_dir, resume_model)), 'restore_checkpoint.zip does not exist!'
     else:
@@ -57,8 +58,9 @@ def train(cfg: DictConfig, resume_model=None):
         params = yaml.safe_load(cfg_yaml)
         params['defaults'] = {k: defaults[k] for k in ('agent', 'env')}
 
-        run = create_wandb_run(output_dir, cfg.wandb, params)
-        save_dict = dict(wandb_id=run.id, params=params)
+        # run = create_wandb_run(output_dir, cfg.wandb, params)
+        # save_dict = dict(wandb_id=run.id, params=params)
+        save_dict = dict(params=params)
         yaml.dump(save_dict, open(os.path.join(output_dir, 'exp_config.yaml'), 'w'))
         print('Config:')
         print(cfg_yaml)
@@ -100,10 +102,11 @@ def train(cfg: DictConfig, resume_model=None):
         restore_callback = FallbackCheckpoint(output_dir, restore_freq)
         log_info = InfoCallback()
         checkpoint = CheckpointCallback(save_freq=save_freq, save_path=f'{output_dir}/logs/', name_prefix='rl_models')
-        wandb = WandbCallback(model_save_path=f"{output_dir}/models/", verbose=2)
-        train_logger = configure(f'{output_dir}/logs/', ["stdout", "log"])
-        model.set_logger(train_logger)
-        return model.learn(total_timesteps=total_timesteps, callback=[log_info, eval_callback, checkpoint, restore_callback, wandb], reset_num_timesteps=True)
+        # wandb = WandbCallback(model_save_path=f"{output_dir}/models/", verbose=2)
+        # train_logger = configure(f'{output_dir}/logs/', ["stdout", "log"])
+        # model.set_logger(train_logger)
+        # return model.learn(total_timesteps=total_timesteps, callback=[log_info, eval_callback, checkpoint, restore_callback, wandb], reset_num_timesteps=True)
+        return model.learn(total_timesteps=total_timesteps, callback=[log_info, eval_callback, checkpoint, restore_callback], reset_num_timesteps=True)
     else:
         raise NotImplementedError
     wandb.finish()
