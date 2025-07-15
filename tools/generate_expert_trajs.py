@@ -10,6 +10,11 @@ from tqdm import tqdm
 from stable_baselines3 import PPO
 from termcolor import cprint
 from hand_imitation.env.create_env import create_env
+import pdb
+
+# import matplotlib as mpl
+# import matplotlib.pyplot as plt
+# from mpl_toolkits.mplot3d import Axes3D
 
 
 if __name__ == '__main__':
@@ -64,6 +69,21 @@ if __name__ == '__main__':
                     for j in range(env.horizon):
                         robot_obs = env.get_test_state()
                         pc_obs = env.get_camera_obs()['instance_1-point_cloud']
+
+                        # pc_obs = env.get_camera_obs()['instance_1-seg_gt']
+                        # pc_obs_seg = pc_obs[np.argwhere(pc_obs[:,-1]==1).reshape(-1)]
+                        # # 方式1：设置三维图形模式
+                        # fig = plt.figure(figsize=(10, 8))
+                        # ax = fig.add_subplot(111, projection='3d')
+                        # ax.scatter(pc_obs[:,0],pc_obs[:,1],pc_obs[:,2],c='b', s=10) # 画出(xs1,ys1,zs1)的散点图
+                        # ax.scatter(pc_obs_seg[:,0],pc_obs_seg[:,1],pc_obs_seg[:,2],c='r', s=10) # 画出(xs1,ys1,zs1)的散点图
+                        # # ax.scatter(pc_obs[:,0],pc_obs[:,2])
+                        # ax.set_xlabel('X label') # 画出坐标轴
+                        # ax.set_ylabel('Y label')
+                        # ax.set_zlabel('Z label')
+                        # plt.savefig('point_cloud_seg.png')
+                        # plt.cla()
+                        # pdb.set_trace()
 
                         if isinstance(obs, dict):
                             for key, value in obs.items():

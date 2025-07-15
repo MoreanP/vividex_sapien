@@ -15,6 +15,7 @@ from hand_imitation.env.rl_env.base import BaseRLEnv
 from hand_imitation.utils.ycb_object_utils import INVERSE_YCB_CLASSES, YCB_ROOT, YCB_CLASSES, YCB_HEIGHT_UNSEEN, YCB_ORIENTATION_UNSEEN
 from hand_imitation.env.sim_env.relocate_env import LabRelocateEnv
 from hand_imitation.real_world import lab
+import pdb
 
 
 def to_quat(arr):
@@ -42,7 +43,9 @@ class AllegroRelocateRLEnv(LabRelocateEnv, BaseRLEnv):
             self.task_name = motion_file['task_name']
         except:
             object_name = motion_file.split('-')[0]
+            # object_name = motion_file.split('-')[1][4:]
             pose_idx = int(motion_file.split('-')[-1])
+            # pose_idx = int(motion_file.split('-')[-2])
             self.init_object_height = YCB_HEIGHT_UNSEEN[object_name][pose_idx]
             self.init_object_quat = YCB_ORIENTATION_UNSEEN[object_name][pose_idx]
             self.task_name = "relocate"

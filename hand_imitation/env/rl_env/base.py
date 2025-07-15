@@ -12,6 +12,7 @@ from hand_imitation.utils.kinematics_helper import PartialKinematicModel
 from hand_imitation.utils.common_robot_utils import load_robot, generate_ur5_robot_hand_info, ArmRobotInfo
 from hand_imitation.env.rl_env.pc_processing import process_pc
 from hand_imitation.utils.random_utils import np_random
+import pdb
 
 VISUAL_OBS_RETURN_TORCH = False
 MAX_DEPTH_RANGE = 2.5
@@ -307,7 +308,8 @@ class BaseRLEnv(BaseSimulationEnv, gym.Env):
                     kwargs = camera_cfg["point_cloud"].get("process_fn_kwargs", {})
 
                     obs = process_pc(cloud=obs_pos, camera_pose=camera_pose, num_points=camera_cfg['point_cloud']['num_points'], np_random=self.np_random, grouping_info=None, segmentation=obs_seg, **kwargs)
-                    obs_dict[f"{name}-seg_gt"] = obs[:, 3:]  # NOTE: add gt segmentation
+                    # obs_dict[f"{name}-seg_gt"] = obs[:, 3:]  # NOTE: add gt segmentation
+                    obs_dict[f"{name}-seg_gt"] = obs
                     if obs_dict[f"{name}-seg_gt"].shape != (camera_cfg["point_cloud"]["num_points"], 4):
                         # align the gt segmentation mask
                         obs_dict[f"{name}-seg_gt"] = np.zeros((camera_cfg["point_cloud"]["num_points"], 4))
@@ -337,7 +339,8 @@ class BaseRLEnv(BaseSimulationEnv, gym.Env):
                         # ic(obs.shape)
                         camera_pose = self.get_camera_to_robot_pose(name)
                         kwargs = camera_cfg["point_cloud"].get("process_fn_kwargs", {})
-                        obs = process_pc(cloud=obs, camera_pose=camera_pose, num_points=camera_cfg['point_cloud']['num_points'], np_random=self.np_random, grouping_info=None, segmentation=None, noise_level=3 if self.pc_noise else 0, **kwargs)
+                        # obs = process_pc(cloud=obs, camera_pose=camera_pose, num_points=camera_cfg['point_cloud']['num_points'], np_random=self.np_random, grouping_info=None, segmentation=None, noise_level=3 if self.pc_noise else 0, **kwargs)
+                        obs = process_pc(cloud=obs, camera_pose=camera_pose, num_points=camera_cfg['point_cloud']['num_points'], np_random=self.np_random, grouping_info=None, segmentation=None, **kwargs)
                         if "additional_process_fn" in camera_cfg["point_cloud"]:
                             for fn in camera_cfg["point_cloud"]["additional_process_fn"]:
                                 obs = fn(obs, self.np_random)

@@ -152,3 +152,5 @@ imgui.ini
 /data
 wandb
 gif
+.err
+.out

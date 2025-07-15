@@ -1,4 +1,4 @@
-name: ycb-006_mustard_bottle-20200709-subject-01-20200709_143211
+name: all_obj_mixed_noise_seg_real
 
 shape_meta: &shape_meta
   # acceptable types: rgb, low_dim
@@ -20,13 +20,13 @@ env_runner:
   n_action_steps: ${n_action_steps}
   fps: 20
   task_name: ${test_task_name}
-  real_robot: False
+  real_robot: True
   noisy_points: ${noisy_points}
   point_cs: ${point_cs}
 
 dataset:
   _target_: dataset.trajectory_dataset.TrajectoryDataset
-  zarr_path: data/${task_name}.zarr
+  zarr_path: ../data/${task_name}.zarr
   horizon: ${horizon}
   pad_before: ${eval:'${n_obs_steps}-1'}
   pad_after: ${eval:'${n_action_steps}-1'}

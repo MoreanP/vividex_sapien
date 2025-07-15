@@ -1,5 +1,6 @@
 import numpy as np
 from hand_imitation.real_world.lab import RELOCATE_BOUND
+import pdb
 
 
 def process_pc(cloud: np.ndarray, camera_pose: np.ndarray, num_points: int, np_random: np.random.RandomState, noise_level=0, grouping_info=None, segmentation=None) -> np.ndarray:

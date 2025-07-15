@@ -26,6 +26,8 @@ from algos.imitate.common.checkpoint_util import TopKCheckpointManager
 from algos.imitate.common.pytorch_util import dict_apply, optimizer_to
 from algos.imitate.model.diffusion.ema_model import EMAModel
 from algos.imitate.model.common.lr_scheduler import get_scheduler
+import pdb
+from torch.utils.tensorboard import SummaryWriter   
 
 OmegaConf.register_new_resolver("eval", eval, replace=True)
 
@@ -124,12 +126,13 @@ class TrainWorkspace:
         
         cfg.logging.name = str(cfg.logging.name)
         cprint("-----------------------------", "yellow")
-        cprint(f"[WandB] group: {cfg.logging.group}", "yellow")
-        cprint(f"[WandB] name: {cfg.logging.name}", "yellow")
+        # cprint(f"[WandB] group: {cfg.logging.group}", "yellow")
+        # cprint(f"[WandB] name: {cfg.logging.name}", "yellow")
         cprint("-----------------------------", "yellow")
         # configure logging
-        wandb_run = wandb.init(dir=str(self.output_dir), config=OmegaConf.to_container(cfg, resolve=True), **cfg.logging)
-        wandb.config.update({"output_dir": self.output_dir,})
+        # wandb_run = wandb.init(dir=str(self.output_dir), config=OmegaConf.to_container(cfg, resolve=True), **cfg.logging)
+        # wandb.config.update({"output_dir": self.output_dir,})
+        writer = SummaryWriter(os.path.join(self.output_dir, 'train_tb'))
 
         # configure checkpoint
         topk_manager = TopKCheckpointManager(save_dir=os.path.join(self.output_dir, 'checkpoints'), **cfg.checkpoint.topk)
@@ -196,7 +199,7 @@ class TrainWorkspace:
                     is_last_batch = (batch_idx == (len(train_dataloader)-1))
                     if not is_last_batch:
                         # log of last step is combined with validation and rollout
-                        wandb_run.log(step_log, step=self.global_step)
+                        # wandb_run.log(step_log, step=self.global_step)
                         self.global_step += 1
 
                     if cfg.training.max_train_steps is not None and batch_idx >= (cfg.training.max_train_steps-1):
@@ -288,7 +291,9 @@ class TrainWorkspace:
 
             # end of epoch
             # log of last step is combined with validation and rollout
-            wandb_run.log(step_log, step=self.global_step)
+            # wandb_run.log(step_log, step=self.global_step)
+            for key, value in step_log.items():
+                writer.add_scalar(key, value, global_step=local_epoch_idx)
             self.global_step += 1
             self.epoch += 1
             del step_log
@@ -312,16 +317,18 @@ class TrainWorkspace:
         policy.eval()
         policy.cuda()
 
-        wandb_run = wandb.init(dir=str(self.output_dir))
-        wandb.config.update({"output_dir": self.output_dir,})
+        # wandb_run = wandb.init(dir=str(self.output_dir))
+        # wandb.config.update({"output_dir": self.output_dir,})
+        writer = SummaryWriter(os.path.join(self.output_dir, 'eval_tb'))
 
         runner_log = env_runner.run(policy)
-        wandb_run.log(runner_log, step=0)
+        # wandb_run.log(runner_log, step=0)
         
         cprint(f"---------------- Eval Results --------------", 'magenta')
         for key, value in runner_log.items():
             if isinstance(value, float):
                 cprint(f"{key}: {value:.4f}", 'magenta')
+                writer.add_scalar(key, value, global_step=0)
         
     @property
     def output_dir(self):
@@ -430,7 +437,7 @@ class TrainWorkspace:
     def create_from_snapshot(cls, path):
         return torch.load(open(path, 'rb'), pickle_module=dill)
 
-@hydra.main(version_base=None, config_path=str(pathlib.Path(__file__).parent.parent.joinpath('algos', 'imitate', 'config')))
+@hydra.main(version_base=None, config_path=str(pathlib.Path(__file__).parent.parent.joinpath('algos', 'imitate', 'config')), config_name='simple_dp3.yaml')
 def main(cfg):
     workspace = TrainWorkspace(cfg)
     workspace.run()
