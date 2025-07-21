@@ -150,9 +150,9 @@ imgui.ini
 /demo_data
 /outputs
 /data
-/tool/data
-/tool/outputs_mixed
-/tool/outputs_subject123
+/tools/data
+/tools/outputs_mixed
+/tools/outputs_subject123
 .png
 wandb
 gif
