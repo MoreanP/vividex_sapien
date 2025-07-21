@@ -1,4 +1,4 @@
-name: all_obj_mixed_noise_seg_real
+name: all_obj_mixed
 
 shape_meta: &shape_meta
   # acceptable types: rgb, low_dim

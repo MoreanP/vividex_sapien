@@ -134,7 +134,7 @@ checkpoint:
     format_str: 'epoch={epoch:04d}-test_mean_score={test_mean_score:.3f}.ckpt'
   save_last_ckpt: True # this only saves when save_ckpt is True
   save_last_snapshot: False
-  eval_dir: 'outputs'
+  eval_dir: 'data/outputs/2025.07.16/20.47.47_train_simple_dp3_all_obj_mixed_noise_seg_real'
 
 multi_run:
   run_dir: data/outputs/${now:%Y.%m.%d}/${now:%H.%M.%S}_${name}_${task_name}

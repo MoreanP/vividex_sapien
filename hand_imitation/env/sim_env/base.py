@@ -8,6 +8,7 @@ from sapien.core import Pose
 from sapien.utils import Viewer
 from hand_imitation.env.sim_env.constructor import get_engine_and_renderer, add_default_scene_light
 from hand_imitation.utils.random_utils import np_random
+import pdb
 
 
 def recover_action(action, limit):

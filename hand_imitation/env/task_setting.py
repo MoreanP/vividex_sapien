@@ -101,7 +101,7 @@ OBS_CONFIG = {
     },
     "instance_pc_seg": {
         "instance_1": {
-            "point_cloud": {"use_seg": True, "use_2frame": True, "num_points": 512, "pose_perturb_level": 0.5,
+            "point_cloud": {"use_seg": True, "use_2frame": True, "num_points": 4096, "pose_perturb_level": 0.5,
                             "process_fn_kwargs": {"noise_level": 0.5}},
         },
     },

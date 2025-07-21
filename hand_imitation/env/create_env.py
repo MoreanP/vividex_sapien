@@ -3,6 +3,7 @@ import numpy as np
 from hand_imitation.env import task_setting
 from hand_imitation.env.rl_env.relocate_env import AllegroRelocateRLEnv
 from hand_imitation.env.sim_env.constructor import add_default_scene_light
+import pdb
 
 
 def create_env(name, task_kwargs=None, use_gui=False, is_eval=False, is_vision=False, is_demo_rollout=False, is_real_robot=False, pc_noise=False, point_cs="world", norm_traj=False):
@@ -41,7 +42,7 @@ def create_env(name, task_kwargs=None, use_gui=False, is_eval=False, is_vision=F
             if is_real_robot:
                 env.setup_camera_from_config(task_setting.CAMERA_CONFIG["relocate"])
                 add_default_scene_light(env.scene, env.renderer)
-                env.setup_visual_obs_config(task_setting.OBS_CONFIG["instance_real"])
+                env.setup_visual_obs_config(task_setting.OBS_CONFIG["instance_pc_seg"])
             else:
                 env.setup_camera_from_config(task_setting.CAMERA_CONFIG["relocate"])
                 add_default_scene_light(env.scene, env.renderer)

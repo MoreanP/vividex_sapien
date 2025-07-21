@@ -26,11 +26,12 @@ from algos.imitate.common.checkpoint_util import TopKCheckpointManager
 from algos.imitate.common.pytorch_util import dict_apply, optimizer_to
 from algos.imitate.model.diffusion.ema_model import EMAModel
 from algos.imitate.model.common.lr_scheduler import get_scheduler
+import pdb
 
 OmegaConf.register_new_resolver("eval", eval, replace=True)
 
 
-@hydra.main(version_base=None, config_path=str(pathlib.Path(__file__).parent.parent.joinpath('algos', 'imitate', 'config')))
+@hydra.main(version_base=None, config_path=str(pathlib.Path(__file__).parent.parent.joinpath('algos', 'imitate', 'config')), config_name='simple_dp3.yaml')
 def main(cfg):
     workspace = TrainWorkspace(cfg)
     workspace.eval()

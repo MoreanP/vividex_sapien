@@ -201,7 +201,10 @@ class BaseRLEnv(BaseSimulationEnv, gym.Env):
         if self.is_vision and not self.is_demo_rollout:
             obs = dict()
             test_state = self.get_test_state()
-            point_cloud = self.get_camera_obs()['instance_1-point_cloud']
+            if self.camera_infos['instance_1']["point_cloud"].get("use_seg") is True:
+                point_cloud = self.get_camera_obs()['instance_1-seg_gt']
+            else:
+                point_cloud = self.get_camera_obs()['instance_1-point_cloud']
             trans_mat = test_state[25:].reshape((-1, 4, 4))
             obs['agent_pos'] = test_state[:22]
             if self.point_cs == "target":

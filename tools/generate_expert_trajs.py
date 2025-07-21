@@ -12,10 +12,24 @@ from termcolor import cprint
 from hand_imitation.env.create_env import create_env
 import pdb
 
-# import matplotlib as mpl
-# import matplotlib.pyplot as plt
-# from mpl_toolkits.mplot3d import Axes3D
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
+def plot_pc(pc_obs):
+    pc_obs_hand = pc_obs[np.argwhere(pc_obs[:,-1]==0).reshape(-1)]
+    pc_obs_obj = pc_obs[np.argwhere(pc_obs[:,-1]==1).reshape(-1)]
+    # 方式1：设置三维图形模式
+    fig = plt.figure(figsize=(10, 8))
+    ax = fig.add_subplot(111, projection='3d')
+    ax.scatter(pc_obs_hand[:,0],pc_obs_hand[:,1],pc_obs_hand[:,2],c='b', s=5) # 画出hand的散点图
+    ax.scatter(pc_obs_obj[:,0],pc_obs_obj[:,1],pc_obs_obj[:,2],c='r', s=10) # 画出obj的散点图
+    ax.set_xlabel('X label') # 画出坐标轴
+    ax.set_ylabel('Y label')
+    ax.set_zlabel('Z label')
+    ax.view_init(elev=45, azim=90)
+    plt.savefig('point_cloud_seg.png')
+    plt.cla()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -44,6 +58,8 @@ if __name__ == '__main__':
             continue
         for model_dir in os.listdir(os.path.join(args.checkpoint_dir, type_dir)):
             print(f"{type_dir}-{model_dir}")
+            # if model_dir not in ['ycb-005_tomato_soup_can-20201015-subject-09-20201015_143403']:
+            #     continue
             model_path = os.path.join(args.checkpoint_dir, type_dir, model_dir)
             checkpoint_path = os.path.join(model_path, "restore_checkpoint.zip")
             config_path = os.path.join(model_path, "exp_config.yaml")
@@ -68,22 +84,26 @@ if __name__ == '__main__':
                     tot_count_sub = 0
                     for j in range(env.horizon):
                         robot_obs = env.get_test_state()
-                        pc_obs = env.get_camera_obs()['instance_1-point_cloud']
+
+                        # pc_obs = env.get_camera_obs()['instance_1-point_cloud']
 
                         # pc_obs = env.get_camera_obs()['instance_1-seg_gt']
-                        # pc_obs_seg = pc_obs[np.argwhere(pc_obs[:,-1]==1).reshape(-1)]
-                        # # 方式1：设置三维图形模式
-                        # fig = plt.figure(figsize=(10, 8))
-                        # ax = fig.add_subplot(111, projection='3d')
-                        # ax.scatter(pc_obs[:,0],pc_obs[:,1],pc_obs[:,2],c='b', s=10) # 画出(xs1,ys1,zs1)的散点图
-                        # ax.scatter(pc_obs_seg[:,0],pc_obs_seg[:,1],pc_obs_seg[:,2],c='r', s=10) # 画出(xs1,ys1,zs1)的散点图
-                        # # ax.scatter(pc_obs[:,0],pc_obs[:,2])
-                        # ax.set_xlabel('X label') # 画出坐标轴
-                        # ax.set_ylabel('Y label')
-                        # ax.set_zlabel('Z label')
-                        # plt.savefig('point_cloud_seg.png')
-                        # plt.cla()
+                        # plot_pc(pc_obs)
                         # pdb.set_trace()
+
+                        if env.camera_infos['instance_1']["point_cloud"].get("use_seg") is True:
+                            pc_obs_seg = env.get_camera_obs()['instance_1-seg_gt']
+                            pc_obs = pc_obs_seg[np.argwhere(pc_obs_seg[:,-1]==1).reshape(-1)][:,:3]
+                            try:
+                                index = np.random.choice(np.arange(pc_obs.shape[0]), size=128, replace=False)
+                            except:
+                                # print("obj pc num: ", pc_obs.shape[0])
+                                # plot_pc(pc_obs_seg)
+                                # pdb.set_trace()
+                                index = np.random.choice(np.arange(pc_obs.shape[0]), size=128, replace=True)
+                            pc_obs = pc_obs[index]
+                        else:
+                            pc_obs = env.get_camera_obs()['instance_1-point_cloud']
 
                         if isinstance(obs, dict):
                             for key, value in obs.items():

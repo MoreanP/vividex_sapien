@@ -12,7 +12,26 @@ from algos.imitate.policy.base_policy import BasePolicy
 from algos.imitate.common.pytorch_util import dict_apply
 from algos.imitate.env_runner.base_runner import BaseRunner
 import algos.imitate.common.logger_util as logger_util
+import pdb
 
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+def plot_pc(pc_obs):
+    pc_obs_hand = pc_obs[np.argwhere(pc_obs[:,-1]==0).reshape(-1)]
+    # pc_obs_obj = pc_obs[np.argwhere(pc_obs[:,-1]==1).reshape(-1)]
+    # 方式1：设置三维图形模式
+    fig = plt.figure(figsize=(10, 8))
+    ax = fig.add_subplot(111, projection='3d')
+    ax.scatter(pc_obs_hand[:,0],pc_obs_hand[:,1],pc_obs_hand[:,2],c='b', s=5) # 画出hand的散点图
+    # ax.scatter(pc_obs_obj[:,0],pc_obs_obj[:,1],pc_obs_obj[:,2],c='r', s=10) # 画出obj的散点图
+    ax.set_xlabel('X label') # 画出坐标轴
+    ax.set_ylabel('Y label')
+    ax.set_zlabel('Z label')
+    ax.view_init(elev=45, azim=90)
+    plt.savefig('point_cloud_seg.png')
+    plt.cla()
 
 class SapienRunner(BaseRunner):
     def __init__(self, output_dir, n_train=10, max_steps=250, n_obs_steps=8, n_action_steps=8, fps=10, crf=22, tqdm_interval_sec=5.0, task_name=None, real_robot=False, noisy_points=False, point_cs="world"):
@@ -34,6 +53,8 @@ class SapienRunner(BaseRunner):
                 self.env_name_list = ["ycb-025_mug-20200709-subject-01-20200709_150949", "ycb-025_mug-20200928-subject-07-20200928_154547", "ycb-025_mug-20200820-subject-03-20200820_143304"]
             elif self.task_name == "all":
                 self.env_name_list = ["ycb-006_mustard_bottle-20200709-subject-01-20200709_143211", "ycb-006_mustard_bottle-20200908-subject-05-20200908_144439", "ycb-006_mustard_bottle-20200928-subject-07-20200928_144226", "ycb-005_tomato_soup_can-20200709-subject-01-20200709_142853", "ycb-005_tomato_soup_can-20201015-subject-09-20201015_143403", "ycb-005_tomato_soup_can-20200709-subject-01-20200709_142926", "ycb-004_sugar_box-20200918-subject-06-20200918_113441", "ycb-004_sugar_box-20200903-subject-04-20200903_104157", "ycb-004_sugar_box-20200908-subject-05-20200908_143931", "ycb-052_extra_large_clamp-20200709-subject-01-20200709_152843", "ycb-052_extra_large_clamp-20200820-subject-03-20200820_144829", "ycb-052_extra_large_clamp-20201002-subject-08-20201002_112816", "ycb-025_mug-20200709-subject-01-20200709_150949", "ycb-025_mug-20200928-subject-07-20200928_154547", "ycb-025_mug-20200820-subject-03-20200820_143304"]
+            # elif self.task_name == "all":
+                # self.env_name_list = ["ycb-004_sugar_box-20200908-subject-05-20200908_143931", ]
             else:
                 self.env_name_list = self.task_name.split('--')
 
@@ -54,8 +75,8 @@ class SapienRunner(BaseRunner):
         self.max_steps = max_steps
         self.tqdm_interval_sec = tqdm_interval_sec
 
-        self.logger_util_train3 = logger_util.LargestKRecorder(K=5)
-        self.logger_util_train10 = logger_util.LargestKRecorder(K=5)
+        self.logger_util_train3 = logger_util.LargestKRecorder(K=15)
+        self.logger_util_train10 = logger_util.LargestKRecorder(K=15)
 
         
     def run(self, policy: BasePolicy):
@@ -90,7 +111,31 @@ class SapienRunner(BaseRunner):
                         # add batch dim to match. (1,2,3,84,84)
                         # and multiply by 255, align with all envs
                         obs_dict_input = {}  # flush unused keys
-                        obs_dict_input['point_cloud'] = obs_dict['point_cloud'].unsqueeze(0)
+                        if obs_dict['point_cloud'].shape[-1] == 4:
+                            pc_obs = []
+                            for frame in range(obs_dict['point_cloud'].shape[0]):
+                                pc_obs_seg_frame = obs_dict['point_cloud'][frame]
+                                pc_obs_frame = pc_obs_seg_frame[torch.argwhere(pc_obs_seg_frame[:,-1]).reshape(-1)][:,:3]
+                                try:
+                                    index = np.random.choice(np.arange(pc_obs_frame.shape[0]), size=128, replace=False)
+                                except:
+                                    try:
+                                        index = np.random.choice(np.arange(pc_obs_frame.shape[0]), size=128, replace=True)
+                                    except:
+                                        try:
+                                            x_bool = torch.where((pc_obs_seg_frame[:,0]<0.4) & (pc_obs_seg_frame[:,0]>0.2), 1, 0)
+                                            y_bool = torch.where((pc_obs_seg_frame[:,1]<0.45) & (pc_obs_seg_frame[:,1]>0.25), 1, 0)
+                                            in_box_indice = torch.where((x_bool + y_bool)==2, 1, 0)
+                                            print('point num in box:', in_box_indice.sum())
+                                            pc_obs_frame = pc_obs_seg_frame[torch.argwhere(in_box_indice).reshape(-1)][:,:3]
+                                            index = np.random.choice(np.arange(pc_obs_frame.shape[0]), size=128, replace=True)
+                                        except:
+                                            pdb.set_trace()
+                                pc_obs_frame = pc_obs_frame[index]
+                                pc_obs.append(pc_obs_frame)
+                            obs_dict_input['point_cloud'] = torch.stack(pc_obs).unsqueeze(0)
+                        else:
+                            obs_dict_input['point_cloud'] = obs_dict['point_cloud'].unsqueeze(0)
                         obs_dict_input['agent_pos'] = obs_dict['agent_pos'].unsqueeze(0)
                         action_dict = policy.predict_action(obs_dict_input)
 
@@ -129,6 +174,7 @@ class SapienRunner(BaseRunner):
 
             self.logger_util_train3.record(SR_mean_3)
             self.logger_util_train10.record(SR_mean_10)
+            print(self.logger_util_train3.scalars)
 
             log_data['SR_train_L3'] = self.logger_util_train3.average_of_largest_K()
             log_data['SR_train_L10'] = self.logger_util_train10.average_of_largest_K()
