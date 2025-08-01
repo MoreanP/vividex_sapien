@@ -151,8 +151,7 @@ imgui.ini
 /outputs
 /data
 /tools/data
-/tools/outputs_mixed
-/tools/outputs_subject123
+/tools/outputs*
 .png
 wandb
 gif

@@ -16,7 +16,7 @@ This is the implementation of **[ViViDex](https://zerchen.github.io/projects/viv
 
 ## Installation 👷
 ```
-git clone https://github.com/zerchen/vividex_sapien.git
+git clone https://github.com/MoreanP/vividex_sapien.git
 
 conda create -n rl python=3.10
 conda activate rl
