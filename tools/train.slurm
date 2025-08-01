@@ -73,29 +73,29 @@ read -ra ADDR <<< "$TEMP_DEVICE"
 #- in `.bashrc`, `env.sh`, or your job script
 
 #- Job step
-# CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-006_mustard_bottle-20200709-subject-01-20200709_143211 env.norm_traj=True ;
+CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-006_mustard_bottle-20200709-subject-01-20200709_143211 env.norm_traj=True ;
 # CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-006_mustard_bottle-20200813-subject-02-20200813_150608 env.norm_traj=True ;
 # CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-006_mustard_bottle-20200820-subject-03-20200820_140454 env.norm_traj=True ;
 CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-006_mustard_bottle-20200908-subject-05-20200908_144439 env.norm_traj=True ;
 CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-006_mustard_bottle-20200928-subject-07-20200928_144226 env.norm_traj=True ;
-# CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-005_tomato_soup_can-20200709-subject-01-20200709_142853 env.norm_traj=True ;
+CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-005_tomato_soup_can-20200709-subject-01-20200709_142853 env.norm_traj=True ;
 # CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-005_tomato_soup_can-20200813-subject-02-20200813_150308 env.norm_traj=True ;
 # CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-005_tomato_soup_can-20200820-subject-03-20200820_140158 env.norm_traj=True ;
 CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-005_tomato_soup_can-20201015-subject-09-20201015_143403 env.norm_traj=True ;
 CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-005_tomato_soup_can-20200709-subject-01-20200709_142926 env.norm_traj=True ;
 # CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-004_sugar_box-20200709-subject-01-20200709_142517 env.norm_traj=True ;
-# CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-004_sugar_box-20200813-subject-02-20200813_145951 env.norm_traj=True ;
+CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-004_sugar_box-20200813-subject-02-20200813_145951 env.norm_traj=True ;
 # CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-004_sugar_box-20200820-subject-03-20200820_135841 env.norm_traj=True ;
 CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-004_sugar_box-20200918-subject-06-20200918_113441 env.norm_traj=True ;
 CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-004_sugar_box-20200903-subject-04-20200903_104157 env.norm_traj=True ;
-CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-004_sugar_box-20200908-subject-05-20200908_143931 env.norm_traj=True ;
-# CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-052_extra_large_clamp-20200709-subject-01-20200709_152843 env.norm_traj=True ;
+# CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-004_sugar_box-20200908-subject-05-20200908_143931 env.norm_traj=True ;
+CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-052_extra_large_clamp-20200709-subject-01-20200709_152843 env.norm_traj=True ;
 # CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-052_extra_large_clamp-20200813-subject-02-20200813_155356 env.norm_traj=True ;
-# CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-052_extra_large_clamp-20200820-subject-03-20200820_144829 env.norm_traj=True ;
+CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-052_extra_large_clamp-20200820-subject-03-20200820_144829 env.norm_traj=True ;
 CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-052_extra_large_clamp-20201002-subject-08-20201002_112816 env.norm_traj=True ;
-# CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-025_mug-20200709-subject-01-20200709_150949 env.norm_traj=True ;
+CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-025_mug-20200709-subject-01-20200709_150949 env.norm_traj=True ;
 # CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-025_mug-20200813-subject-02-20200813_153839 env.norm_traj=True ;
-# CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-025_mug-20200820-subject-03-20200820_143304 env.norm_traj=True ;
+CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-025_mug-20200820-subject-03-20200820_143304 env.norm_traj=True ;
 CUDA_VISIBLE_DEVICES=${ADDR[0]} python train.py env.name=ycb-025_mug-20200928-subject-07-20200928_154547 env.norm_traj=True
 
 wait
