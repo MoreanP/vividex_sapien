@@ -1,5 +1,7 @@
 <div align="center">
 
+This is a repository which was forked from https://github.com/zerchen/vividex_sapien
+
 # ViViDex: Learning Vision-based Dexterous Manipulation from Human Videos
 
 [Zerui Chen](https://zerchen.github.io/)<sup>1</sup> &emsp; [Shizhe Chen](https://cshizhe.github.io/)<sup>1</sup> &emsp; [Etienne Arlaud](https://scholar.google.com/citations?user=-0kdc5cAAAAJ&hl=fr)<sup>1</sup> &emsp; [Ivan Laptev](https://www.di.ens.fr/~laptev/)<sup>2</sup> &emsp; [Cordelia Schmid](https://cordeliaschmid.github.io/)<sup>1</sup>
